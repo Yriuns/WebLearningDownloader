@@ -6,7 +6,7 @@
 
 `OS X version`: [OS X(mac)版本](http://thumse-weblearn.stor.sinaapp.com/WebLearningDownloader.osx.crx)
 ### 安装
-1. 打开`Chrome`浏览器，在地址栏输入[chrome://extensions/](chrome://extensions/)，回车，进入`Chrome`扩展程序界面。
+1. 打开`Chrome`浏览器，在地址栏输入`chrome://extensions/`，回车，进入`Chrome`扩展程序界面。
 2. 将下载好的`WebLearningDownloader.osx.crx`或`WebLearningDownloader.win.crx`拖入浏览器中。  
 **直接点击插件是装不上的。**
 
