@@ -20,20 +20,22 @@ function init(event) {
         trs = tbody.children;
         for (var i = 0; i < trs.length; ++i) {
             tr = trs[i];
-            // var td = document.createElement("td");
+            var td = document.createElement("td");
+            td.setAttribute("width", 40);
             var checkBox = document.createElement("input");
             checkBox.setAttribute("type", "checkbox");
             checkBox.setAttribute("class", "chooseFile");
-            checkBox.setAttribute("style", "margin-right: 9px")
-            // checkBox.setAttribute("height", 0);
             if (tr.lastElementChild.innerText === "新文件") {
                 checkBox.checked = true;
             }
-            // td.appendChild(checkBox);
-            // tr.insertBefore(td, tr.children[1]);
+            td.appendChild(checkBox);
+            tr.insertBefore(td, tr.children[1]);
+            tr.children[0].setAttribute("width", 60);
+            tr.children[2].setAttribute("width", 240);
             tr.children[1].insertBefore(checkBox, tr.children[1].firstElementChild);
             if (i === 0) {
-                tr.children[1].insertBefore(choseAll, tr.children[1].lastElementChild);
+                td.appendChild(choseAll);
+                // tr.children[1].insertBefore(choseAll, tr.children[1].lastElementChild);
             }
         }
         // trs[0].insertBefore(choseAll, trs[0].children[2]);
