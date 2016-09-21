@@ -64,17 +64,20 @@ function init(event) {
         tbody = layers[k].firstElementChild.firstElementChild;
         trs = tbody.children;
         checkBoxs = tbody.getElementsByClassName("chooseFile");
-        urls = []
+        urls = [];
+        filenames = [];
         for (var i = 1; i < checkBoxs.length; ++i) {
             if (checkBoxs[i].checked === true) {
                 url = trs[i].children[2].firstElementChild.href;
+                filename = trs[i].childNodes[3].data.match(/getfilelink=(.*)&/)[1];
                 urls.push(url);
-                //filename = trs[i].childNodes[3].data.match(/getfilelink=(.*)&/)[1];
+                filenames.push(filename);
             }
         }
         chrome.runtime.sendMessage({
             action: 'download',
-            urls: urls
+            urls: urls,
+            filenames: filenames
         });
     };
     ImageTab1.parentElement.appendChild(downloadButton);
