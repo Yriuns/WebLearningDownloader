@@ -3,7 +3,7 @@ var isFirst = true;
 function download(filename, url) {
     var link = document.createElement('a');
     link.download = filename;
-    link.href = 'data:,' + url;
+    link.href = url;
     link.click();
 }
 
@@ -35,10 +35,9 @@ function init(event) {
             tr.children[1].insertBefore(checkBox, tr.children[1].firstElementChild);
             if (i === 0) {
                 td.appendChild(choseAll);
-                // tr.children[1].insertBefore(choseAll, tr.children[1].lastElementChild);
+                td.setAttribute("class", "title");
             }
         }
-        // trs[0].insertBefore(choseAll, trs[0].children[2]);
         checkBoxs = tbody.getElementsByClassName("chooseFile");
         checkBoxs[0].onclick = function(trs, checkBoxs) {
             return function() {
@@ -65,13 +64,18 @@ function init(event) {
         tbody = layers[k].firstElementChild.firstElementChild;
         trs = tbody.children;
         checkBoxs = tbody.getElementsByClassName("chooseFile");
+        urls = []
         for (var i = 1; i < checkBoxs.length; ++i) {
             if (checkBoxs[i].checked === true) {
                 url = trs[i].children[2].firstElementChild.href;
-                filename = trs[i].childNodes[3].data.match(/getfilelink=(.*)&/)[1];
-                download(filename, url);
+                urls.push(url);
+                //filename = trs[i].childNodes[3].data.match(/getfilelink=(.*)&/)[1];
             }
         }
+        chrome.runtime.sendMessage({
+            action: 'download',
+            urls: urls
+        });
     };
     ImageTab1.parentElement.appendChild(downloadButton);
     isFirst = false;
