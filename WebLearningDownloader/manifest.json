@@ -1,17 +1,18 @@
 {
-  "name": "__MSG_appName__",
-  "short_name": "learn downloader",
-  "version": "0.0.5.4",
-  "manifest_version" : 2,
-  "default_locale": "en",
-  "description": "download selected files",
-  "background": {
-    "scripts": ["jszip.js", "background.js"]
-  },
-  "browser_action": {
-    "default_icon": "icon38.png"
-  },
-  "permissions": ["downloads", "activeTab", "http://learn.tsinghua.edu.cn/*"],
-  "icons": {
-          "128": "icon.png" }
+    "name": "__MSG_appName__",
+    "version": "0.0.0.2",
+    "manifest_version" : 2,
+    "default_locale": "en",
+    "description": "Download selected files",
+    "background": {
+        "scripts": ["jszip.js", "background.js"]
+    },
+    "browser_action": {
+        "default_icon": "icon38.png"
+    },
+    "permissions": ["downloads", "activeTab", "http://learn.tsinghua.edu.cn/*"],
+    "icons": { "128": "icon.png" },
+    "web_accessible_resources": [
+        "mycss.css"
+    ]
 }

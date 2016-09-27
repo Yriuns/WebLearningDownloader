@@ -34,6 +34,7 @@ function onDownloadComplete(blobData, urls, filenames, zip) {
 var count;
 chrome.runtime.onMessage.addListener(function(msg) {
     if ((msg.action === 'download') && (msg.urls !== undefined)) {
+        chrome.tabs.insertCSS(null, {file: "mycss.css"});
         count = 0;
         var zip = new JSZip();
         downloadFile(msg.urls[count], msg.filenames[count], onDownloadComplete, msg.urls, msg.filenames, zip);
@@ -54,6 +55,10 @@ function zipAndSaveFiles(zip) {
     zip.generateAsync({ type: "base64" })
         .then(function(content) {
             url = "data:application/zip;base64," + content;
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {message: "downloadComplete"}, function(response) {
+                });
+            });
             chrome.downloads.download({
                 url: url,
                 filename: 'archive.zip',
@@ -61,3 +66,4 @@ function zipAndSaveFiles(zip) {
             });
         });
 }
+

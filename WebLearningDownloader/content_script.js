@@ -1,5 +1,5 @@
 var isFirst = true;
-
+var loader;
 function download(filename, url) {
     var link = document.createElement('a');
     link.download = filename;
@@ -12,8 +12,13 @@ function init(event) {
     if (currentDocument.getElementById("downloadbutton") !== null) {
         return;
     }
+    if (document.getElementById("loader") === null) {
+        loader = document.createElement("div");
+        loader.setAttribute("id", "loader");
+        loader.style.visibility = 'hidden';
+        document.body.appendChild(loader);
+    }
     layers = currentDocument.getElementsByClassName("layerbox");
-    cookie = document.cookie.split(";").slice(0, 3).join();
     for (var j = 0; j < layers.length; ++j) {
         var choseAll = document.createTextNode("全选  ");
         tbody = layers[j].firstElementChild.firstElementChild;
@@ -55,6 +60,7 @@ function init(event) {
     downloadButton.setAttribute("id", "downloadbutton");
     downloadButton.value = "下载";
     downloadButton.onclick = function() {
+        loader.style.visibility = 'visible';
         var urls = [];
         var k = 0;
         for (; k < layers.length; ++k) {
@@ -84,3 +90,8 @@ function init(event) {
     isFirst = false;
 }
 init();
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.message == "downloadComplete") {
+        document.getElementById("loader").style.visibility = 'hidden';
+    }
+});
