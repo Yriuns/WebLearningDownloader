@@ -30,7 +30,7 @@ function init(event) {
             var checkBox = document.createElement("input");
             checkBox.setAttribute("type", "checkbox");
             checkBox.setAttribute("class", "chooseFile");
-            if (tr.lastElementChild.innerText === "新文件") {
+            if (tr.lastElementChild.textContent.trim() === "新文件") {
                 checkBox.checked = true;
             }
             td.appendChild(checkBox);
@@ -75,7 +75,13 @@ function init(event) {
         for (var i = 1; i < checkBoxs.length; ++i) {
             if (checkBoxs[i].checked === true) {
                 url = trs[i].children[2].firstElementChild.href;
-                filename = trs[i].childNodes[3].data.match(/getfilelink=(.*)&/)[1];
+                str = trs[i].childNodes[3].data;
+                reg = str.match(/getfilelink=(.*)(_\d{6,})(\..*)&/) || str.match(/getfilelink=(.*)(\..*)&/);
+                if (reg !== null) {
+                    filename = reg[1] + reg[reg.length - 1];
+                } else {
+                    filename = str.match(/getfilelink=(.*)&/);
+                }
                 urls.push(url);
                 filenames.push(filename);
             }
