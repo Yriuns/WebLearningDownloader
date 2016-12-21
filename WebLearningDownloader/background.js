@@ -1,31 +1,10 @@
 zip.workerScriptsPath = "/lib/";
 
-chrome.browserAction.onClicked.addListener(function(tab) {
-    chrome.tabs.executeScript(null, { file: "content_script.js" });
-});
-
 var obj = this;
 var requestFileSystem = obj.webkitRequestFileSystem || obj.mozRequestFileSystem || obj.requestFileSystem;
 
 function onerror(message) {
     console.log(message);
-}
-
-function createTempFile(callback) {
-    var tmpFilename = "tmp.zip";
-    requestFileSystem(TEMPORARY, 4 * 1024 * 1024 * 1024, function(filesystem) {
-        function create() {
-            filesystem.root.getFile(tmpFilename, {
-                create : true
-            }, function(zipFile) {
-                callback(zipFile);
-            });
-        }
-
-        filesystem.root.getFile(tmpFilename, null, function(entry) {
-            entry.remove(create, create);
-        }, create);
-    });
 }
 
 var model = (function() {
@@ -63,12 +42,6 @@ var model = (function() {
             else if (creationMethod == "Blob") {
                 writer = new zip.BlobWriter();
                 createZipWriter();
-            } else {
-                createTempFile(function(fileEntry) {
-                    zipFileEntry = fileEntry;
-                    writer = new zip.FileWriter(zipFileEntry);
-                    createZipWriter();
-                });
             }
         },
         getBlobURL : function(callback) {
@@ -117,10 +90,10 @@ function is_downloaded(filename) {
 }
 
 function getFiles(filenames) {
-    result = []
-        for (var i = 0; i < filenames.length; ++i) {
-            result.push(files[filenames[i]]);
-        }
+    result = [];
+    for (var i = 0; i < filenames.length; ++i) {
+        result.push(files[filenames[i]]);
+    }
     return result;
 }
 
@@ -147,9 +120,7 @@ function zipAndSaveFiles(filenames) {
     console.log(zip_needed_files);
     model.setCreationMethod("Blob");
     model.addFiles(zip_needed_files,
-            function() {},
-            function(file) {},
-            function(current, total) {},
+            function() {}, function(file) {}, function(current, total) {},
             function() {
                 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
                     chrome.tabs.sendMessage(tabs[0].id, {message: "downloadComplete"}, function(response) {

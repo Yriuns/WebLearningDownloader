@@ -1,14 +1,15 @@
 var isFirst = true;
 var loader;
-function download(filename, url) {
-    var link = document.createElement('a');
-    link.download = filename;
-    link.href = url;
-    link.click();
-}
 
-function init(event) {
-    currentDocument = document.getElementsByName("content_frame")[0].contentWindow.document;
+reg = /http:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/download.*/
+iframe = document.getElementsByName("content_frame")[0];
+iframe.onload = function() {
+    if (reg.test(iframe.contentWindow.location.href))
+        init();
+};
+
+function init() {
+    currentDocument = iframe.contentWindow.document;
     if (currentDocument.getElementById("downloadbutton") !== null) {
         return;
     }
@@ -95,7 +96,7 @@ function init(event) {
     ImageTab1.parentElement.appendChild(downloadButton);
     isFirst = false;
 }
-init();
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.message == "downloadComplete") {
         document.getElementById("loader").style.visibility = 'hidden';
