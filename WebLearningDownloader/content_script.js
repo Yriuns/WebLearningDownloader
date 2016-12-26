@@ -1,16 +1,18 @@
+'use strict'
+
 var isFirst = true;
 var loader;
 
-reg = /http:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/download.*/
-iframe = document.getElementsByName("content_frame")[0];
+var reg = /http:\/\/learn\.tsinghua\.edu\.cn\/MultiLanguage\/lesson\/student\/download.*/
+var iframe = document.getElementsByName("content_frame")[0];
 iframe.onload = function() {
     if (reg.test(iframe.contentWindow.location.href))
         init();
 };
 
 function init() {
-    currentDocument = iframe.contentWindow.document;
-    if (currentDocument.getElementById("downloadbutton") !== null) {
+    var idocument = iframe.contentWindow.document;
+    if (idocument.getElementById("downloadbutton") !== null) {
         return;
     }
     if (document.getElementById("loader") === null) {
@@ -19,13 +21,13 @@ function init() {
         loader.style.visibility = 'hidden';
         document.body.appendChild(loader);
     }
-    layers = currentDocument.getElementsByClassName("layerbox");
+    var layers = idocument.getElementsByClassName("layerbox");
     for (var j = 0; j < layers.length; ++j) {
         var choseAll = document.createTextNode("全选  ");
-        tbody = layers[j].firstElementChild.firstElementChild;
-        trs = tbody.children;
+        var tbody = layers[j].firstElementChild.firstElementChild;
+        var trs = tbody.children;
         for (var i = 0; i < trs.length; ++i) {
-            tr = trs[i];
+            var tr = trs[i];
             var td = document.createElement("td");
             td.setAttribute("width", 40);
             var checkBox = document.createElement("input");
@@ -44,7 +46,7 @@ function init() {
                 td.setAttribute("class", "title");
             }
         }
-        checkBoxs = tbody.getElementsByClassName("chooseFile");
+        var checkBoxs = tbody.getElementsByClassName("chooseFile");
         checkBoxs[0].onclick = function(trs, checkBoxs) {
             return function() {
                 for (var i = 1; i < trs.length; ++i) {
@@ -54,7 +56,7 @@ function init() {
         }(trs, checkBoxs);
     }
 
-    var ImageTab1 = currentDocument.getElementById("ImageTab1");
+    var ImageTab1 = idocument.getElementById("ImageTab1");
     var right_center = document.getElementById("right_center");
     var downloadButton = document.createElement("input");
     downloadButton.setAttribute("type", "button");
@@ -62,27 +64,27 @@ function init() {
     downloadButton.value = "下载";
     downloadButton.onclick = function() {
         loader.style.visibility = 'visible';
-        var urls = [];
         var k = 0;
         for (; k < layers.length; ++k) {
             if (layers[k].style.visibility !== 'hidden')
                 break;
         }
-        tbody = layers[k].firstElementChild.firstElementChild;
-        trs = tbody.children;
-        checkBoxs = tbody.getElementsByClassName("chooseFile");
-        urls = [];
-        filenames = [];
+        var archive_name = idocument.getElementsByClassName("info_title")[0].textContent.trim();
+        archive_name += '-' + idocument.getElementById(`ImageTab${k + 1}`).textContent.trim();
+        var tbody = layers[k].firstElementChild.firstElementChild;
+        var trs = tbody.children;
+        var checkBoxs = tbody.getElementsByClassName("chooseFile");
+        var urls = [];
+        var filenames = [];
         for (var i = 1; i < checkBoxs.length; ++i) {
             if (checkBoxs[i].checked === true) {
-                url = trs[i].children[2].firstElementChild.href;
-                str = trs[i].childNodes[3].data;
-                reg = str.match(/getfilelink=(.*)(_\d{6,})(\..*)&/) || str.match(/getfilelink=(.*)(\..*)&/);
-                if (reg !== null) {
-                    filename = reg[1] + reg[reg.length - 1];
-                } else {
-                    filename = str.match(/getfilelink=(.*)&/);
+                var url = trs[i].children[2].firstElementChild.href;
+                var str = trs[i].childNodes[3].data;
+                var file_reg = str.match(/getfilelink=(.*)(_\d{6,})(\..*)&/) || str.match(/getfilelink=(.*)(\..*)&/);
+                if (file_reg === null) {
+                    file_reg = str.match(/getfilelink=(.*)&/);
                 }
+                var filename = file_reg[1] + file_reg[file_reg.length - 1];
                 urls.push(url);
                 filenames.push(filename);
             }
@@ -90,7 +92,8 @@ function init() {
         chrome.runtime.sendMessage({
             action: 'download',
             urls: urls,
-            filenames: filenames
+            filenames: filenames,
+            archive_name: archive_name + '.zip'
         });
     };
     ImageTab1.parentElement.appendChild(downloadButton);

@@ -2,6 +2,7 @@ zip.workerScriptsPath = "/lib/";
 
 var obj = this;
 var requestFileSystem = obj.webkitRequestFileSystem || obj.mozRequestFileSystem || obj.requestFileSystem;
+var archive_name;
 
 function onerror(message) {
     console.log(message);
@@ -103,6 +104,7 @@ chrome.runtime.onMessage.addListener(function(msg) {
         chrome.tabs.insertCSS(null, {file: "mycss.css"});
         filenames = msg.filenames;
         urls = msg.urls;
+        archive_name = msg.archive_name;
         for (count = 0; count <filenames.length; ++count) {
             if (!is_downloaded(filenames[count]))
                 break;
@@ -117,7 +119,6 @@ chrome.runtime.onMessage.addListener(function(msg) {
 
 function zipAndSaveFiles(filenames) {
     zip_needed_files = getFiles(filenames);
-    console.log(zip_needed_files);
     model.setCreationMethod("Blob");
     model.addFiles(zip_needed_files,
             function() {}, function(file) {}, function(current, total) {},
@@ -129,7 +130,7 @@ function zipAndSaveFiles(filenames) {
                 model.getBlobURL(function(url) {
                     chrome.downloads.download({
                         url: url,
-                        filename: 'archive.zip',
+                        filename: archive_name,
                         saveAs: true
                     });
                 });
