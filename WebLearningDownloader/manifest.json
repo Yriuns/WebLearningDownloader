@@ -1,6 +1,6 @@
 {
     "name": "__MSG_appName__",
-    "version": "0.0.0.7",
+    "version": "0.0.1.1",
     "manifest_version" : 2,
     "default_locale": "en",
     "description": "Download selected files",
@@ -16,7 +16,7 @@
     "browser_action": {
         "default_icon": "icon38.png"
     },
-    "permissions": ["downloads", "activeTab", "http://learn.tsinghua.edu.cn/*"],
+    "permissions": ["downloads", "activeTab", "http://learn.tsinghua.edu.cn/MultiLanguage/*"],
     "icons": { "128": "icon.png" },
     "web_accessible_resources": [
         "mycss.css"

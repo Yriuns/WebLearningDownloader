@@ -119,8 +119,9 @@ chrome.runtime.onMessage.addListener(function(msg) {
 
 function zipAndSaveFiles(filenames) {
     zip_needed_files = getFiles(filenames);
-    model.setCreationMethod("Blob");
-    model.addFiles(zip_needed_files,
+    if (zip_needed_files.length > 1) {
+        model.setCreationMethod("Blob");
+        model.addFiles(zip_needed_files,
             function() {}, function(file) {}, function(current, total) {},
             function() {
                 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -134,5 +135,17 @@ function zipAndSaveFiles(filenames) {
                         saveAs: true
                     });
                 });
+            }
+        );
+    } else {
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {message: "downloadComplete"}, function(response) {
             });
+        });
+        chrome.downloads.download({
+            url: URL.createObjectURL(zip_needed_files[0].data),
+            filename: filenames[0],
+            saveAs: true
+        });
+    }
 }
